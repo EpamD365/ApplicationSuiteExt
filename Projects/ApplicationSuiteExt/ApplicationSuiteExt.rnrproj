@@ -57,6 +57,11 @@
       <Name>BankPaymCancelExt_Extension</Name>
       <Link>Classes\BankPaymCancelExt_Extension</Link>
     </Content>
+    <Content Include="AxClass\BusinessEventsCommitLogWriterExt">
+      <SubType>Content</SubType>
+      <Name>BusinessEventsCommitLogWriterExt</Name>
+      <Link>Classes\BusinessEventsCommitLogWriterExt</Link>
+    </Content>
     <Content Include="AxClass\CustReversePostingExt">
       <SubType>Content</SubType>
       <Name>CustReversePostingExt</Name>
