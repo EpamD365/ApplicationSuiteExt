@@ -206,15 +206,6 @@ class TransactionReversal_VendExt extends TransactionReversal_CustVendExt
 ]]></Source>
 			</Method>
 			<Method>
-				<Name>onPostFindVendTransOrig</Name>
-				<Source><![CDATA[
-    delegate void onPostFindVendTransOrig(VendTrans _vendTransOrig)
-    {
-    }
-
-]]></Source>
-			</Method>
-			<Method>
 				<Name>processReversal</Name>
 				<Source><![CDATA[
     /// <summary>
@@ -253,9 +244,6 @@ class TransactionReversal_VendExt extends TransactionReversal_CustVendExt
             vendTransOrig = VendTrans::find(vendTransOrig.RecId, true); // Select must be within the tts
         }
 
-        // MOD: new delegate
-        this.onPostFindVendTransOrig(vendTransOrig);
-
         inputGeneralJournalAccountEntry =
                             GeneralLedgerExtension::findAccountEntryBySubledgerVoucherAccountingDate(vendTrans.Voucher, vendTrans.TransDate);
 
@@ -291,7 +279,7 @@ class TransactionReversal_VendExt extends TransactionReversal_CustVendExt
         reversalVoucher = transactionReversal_Ledger.parmReversalVoucher();
 
         this.createCustVendTrans(vendTrans, vendTransOrig);
-
+        
         TransactionReversal_Asset transactionReversal_Asset = TransactionReversal_Asset::construct();
         this.initializeTransactionReversal_Asset(transactionReversal_Asset);
 
