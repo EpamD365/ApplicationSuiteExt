@@ -279,7 +279,7 @@ class TransactionReversal_VendExt extends TransactionReversal_CustVendExt
         reversalVoucher = transactionReversal_Ledger.parmReversalVoucher();
 
         this.createCustVendTrans(vendTrans, vendTransOrig);
-        
+
         TransactionReversal_Asset transactionReversal_Asset = TransactionReversal_Asset::construct();
         this.initializeTransactionReversal_Asset(transactionReversal_Asset);
 
