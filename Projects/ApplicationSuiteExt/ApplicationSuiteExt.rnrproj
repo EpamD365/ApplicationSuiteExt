@@ -42,6 +42,41 @@
       <Name>BankPaymAdviceContractExt</Name>
       <Link>Classes\BankPaymAdviceContractExt</Link>
     </Content>
+    <Content Include="AxClass\BankPaymAdviceReportGeneratorCustExt">
+      <SubType>Content</SubType>
+      <Name>BankPaymAdviceReportGeneratorCustExt</Name>
+      <Link>Classes\BankPaymAdviceReportGeneratorCustExt</Link>
+    </Content>
+    <Content Include="AxClass\BankPaymAdviceReportGeneratorCustPostedExt">
+      <SubType>Content</SubType>
+      <Name>BankPaymAdviceReportGeneratorCustPostedExt</Name>
+      <Link>Classes\BankPaymAdviceReportGeneratorCustPostedExt</Link>
+    </Content>
+    <Content Include="AxClass\BankPaymAdviceReportGeneratorExt">
+      <SubType>Content</SubType>
+      <Name>BankPaymAdviceReportGeneratorExt</Name>
+      <Link>Classes\BankPaymAdviceReportGeneratorExt</Link>
+    </Content>
+    <Content Include="AxClass\BankPaymAdviceReportGeneratorVendExt">
+      <SubType>Content</SubType>
+      <Name>BankPaymAdviceReportGeneratorVendExt</Name>
+      <Link>Classes\BankPaymAdviceReportGeneratorVendExt</Link>
+    </Content>
+    <Content Include="AxClass\BankPaymAdviceReportGeneratorVendPostedExt">
+      <SubType>Content</SubType>
+      <Name>BankPaymAdviceReportGeneratorVendPostedExt</Name>
+      <Link>Classes\BankPaymAdviceReportGeneratorVendPostedExt</Link>
+    </Content>
+    <Content Include="AxClass\BankPaymAdviceReportGeneratorVendPostedExtBWFASVPA_Extension">
+      <SubType>Content</SubType>
+      <Name>BankPaymAdviceReportGeneratorVendPostedExtBWFASVPA_Extension</Name>
+      <Link>Classes\BankPaymAdviceReportGeneratorVendPostedExtBWFASVPA_Extension</Link>
+    </Content>
+    <Content Include="AxClass\BankPaymAdviceReportGeneratorVendPromissoryNoteReDrawExt">
+      <SubType>Content</SubType>
+      <Name>BankPaymAdviceReportGeneratorVendPromissoryNoteReDrawExt</Name>
+      <Link>Classes\BankPaymAdviceReportGeneratorVendPromissoryNoteReDrawExt</Link>
+    </Content>
     <Content Include="AxClass\BankPaymAdviceUIBuilderExt">
       <SubType>Content</SubType>
       <Name>BankPaymAdviceUIBuilderExt</Name>
@@ -56,6 +91,11 @@
       <SubType>Content</SubType>
       <Name>BankPaymCancelExt_Extension</Name>
       <Link>Classes\BankPaymCancelExt_Extension</Link>
+    </Content>
+    <Content Include="AxClass\BusinessEventsCommitLogWriterExt">
+      <SubType>Content</SubType>
+      <Name>BusinessEventsCommitLogWriterExt</Name>
+      <Link>Classes\BusinessEventsCommitLogWriterExt</Link>
     </Content>
     <Content Include="AxClass\CustReversePostingExt">
       <SubType>Content</SubType>
@@ -137,10 +177,45 @@
       <Name>TransactionReversalExecutionDetailExt_Extension</Name>
       <Link>Classes\TransactionReversalExecutionDetailExt_Extension</Link>
     </Content>
+    <Content Include="AxClass\TransactionReversalExt">
+      <SubType>Content</SubType>
+      <Name>TransactionReversalExt</Name>
+      <Link>Classes\TransactionReversalExt</Link>
+    </Content>
+    <Content Include="AxClass\TransactionReversalOriginalTransactionFinderExt">
+      <SubType>Content</SubType>
+      <Name>TransactionReversalOriginalTransactionFinderExt</Name>
+      <Link>Classes\TransactionReversalOriginalTransactionFinderExt</Link>
+    </Content>
+    <Content Include="AxClass\TransactionReversal_CustVendExt">
+      <SubType>Content</SubType>
+      <Name>TransactionReversal_CustVendExt</Name>
+      <Link>Classes\TransactionReversal_CustVendExt</Link>
+    </Content>
+    <Content Include="AxClass\TransactionReversal_LedgerExt">
+      <SubType>Content</SubType>
+      <Name>TransactionReversal_LedgerExt</Name>
+      <Link>Classes\TransactionReversal_LedgerExt</Link>
+    </Content>
+    <Content Include="AxClass\TransactionReversal_Ledger_RUExt">
+      <SubType>Content</SubType>
+      <Name>TransactionReversal_Ledger_RUExt</Name>
+      <Link>Classes\TransactionReversal_Ledger_RUExt</Link>
+    </Content>
+    <Content Include="AxClass\TransactionReversal_VendExt">
+      <SubType>Content</SubType>
+      <Name>TransactionReversal_VendExt</Name>
+      <Link>Classes\TransactionReversal_VendExt</Link>
+    </Content>
     <Content Include="AxClass\VendReversePostingExt">
       <SubType>Content</SubType>
       <Name>VendReversePostingExt</Name>
       <Link>Classes\VendReversePostingExt</Link>
+    </Content>
+    <Content Include="AxClass\VendTransExt_Extension">
+      <SubType>Content</SubType>
+      <Name>VendTransExt_Extension</Name>
+      <Link>Classes\VendTransExt_Extension</Link>
     </Content>
   </ItemGroup>
   <ItemGroup>

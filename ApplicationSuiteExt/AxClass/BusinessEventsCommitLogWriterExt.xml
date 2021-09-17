@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AxClass xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+	<Name>BusinessEventsCommitLogWriterExt</Name>
+	<SourceCode>
+		<Declaration><![CDATA[
+using Microsoft.Dynamics.ApplicationPlatform.XppServices.Instrumentation;
+
+/// <summary>
+/// The <c>BusinessEventsCommitLogWriter</c> writes <c>BusinessEventsCommitLogEntry</c> to the commit log and <c>BusinessEventsExceptionLogParameters</c> to the exception log.
+/// </summary>
+// This is a framework class. Customizing this class may cause problems with future upgrades to the software.
+public static class BusinessEventsCommitLogWriterExt
+{
+}
+]]></Declaration>
+		<Methods>
+			<Method>
+				<Name>writeToCommitLog</Name>
+				<Source><![CDATA[
+    /// <summary>
+    /// Writes a new entry to the business events commit log.
+    /// </summary>
+    /// <param name = "_logEntry">The business events log entry.</param>
+    /// <param name = "_userConnection">The <c>UserConnection</c></param>
+    public static void writeToCommitLog(BusinessEventsCommitLogEntry _commitLogEntry, UserConnection _userConnection = null)
+    {
+        if (_commitLogEntry != null)
+        {
+            BusinessEventsCommitLog commitLog;
+            str connectionType = 'Default:System';
+
+            if (_userConnection && BusinessEventsFlights::AllowUserConnectionInCommitLogWriter())
+            {
+                connectionType = 'Custom:User';
+                commitLog.setConnection(_userConnection);
+            }
+
+            commitLog.BusinessEventId = _commitLogEntry.parmBusinessEventId();
+            commitLog.EventId = _commitLogEntry.parmEventId();
+            commitLog.EventTime = _commitLogEntry.parmEventTime();
+            commitLog.SessionId = _commitLogEntry.parmSessionId();
+            commitLog.SerializedContract = _commitLogEntry.parmSerializedContract();
+            commitLog.LegalEntity = _commitLogEntry.parmLegalEntity();
+            commitLog.TargetEndpoint = _commitLogEntry.parmTargetEndpoint();
+            commitLog.SerializedFilterProperties = _commitLogEntry.parmSerializedFilterProperties();
+            commitLog.CDSContext = _commitLogEntry.parmCDSContext();
+
+            commitLog.insert();
+
+            BusinessEventsEventSource::EventWriteEventSavedInCommitLog(commitLog.BusinessEventId, commitLog.EventId, commitLog.LegalEntity, commitLog.TargetEndpoint, connectionType);
+        }
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>writeToExceptionLog</Name>
+				<Source><![CDATA[
+    /// <summary>
+    /// Writes a new entry to the business events exception log.
+    /// </summary>
+    /// <param name = "_exceptionLogParameters">The business events log parameters.</param>
+    public static void writeToExceptionLog(BusinessEventsExceptionLogParameters _exceptionLogParameters)
+    {
+        if (_exceptionLogParameters != null)
+        {
+            ttsbegin;
+
+            // If an exception for the same business event instance already exist then update the exception log
+            BusinessEventsExceptionLog exceptionLog = BusinessEventsExceptionLog::findFromEventIdAndEndpoint(_exceptionLogParameters.parmEventId(), _exceptionLogParameters.parmTargetEndpoint(), true);
+
+            exceptionLog.BusinessEventId = _exceptionLogParameters.parmBusinessEventId();
+            exceptionLog.ProducerConsumerType = BusinessEventsProducerConsumerType::BusinessEvents;
+            exceptionLog.EventId = _exceptionLogParameters.parmEventId();
+            exceptionLog.EventTime = _exceptionLogParameters.parmEventTime();
+            exceptionLog.SessionId = _exceptionLogParameters.parmSessionId();
+            exceptionLog.SerializedContract = _exceptionLogParameters.parmSerializedContract();
+            exceptionLog.SerializedFilterProperties = _exceptionLogParameters.parmSerializedFilterProperties();
+            exceptionLog.LegalEntity = _exceptionLogParameters.parmLegalEntity();
+            exceptionLog.TargetEndpoint = _exceptionLogParameters.parmTargetEndpoint();
+            exceptionLog.CDSContext = _exceptionLogParameters.parmCDSContext();
+            exceptionLog.ExceptionMessage = _exceptionLogParameters.parmExceptionMessage();
+            exceptionLog.ExceptionSource = _exceptionLogParameters.parmExceptionSource();
+            exceptionLog.ExceptionTypeName = _exceptionLogParameters.parmExceptionTypeName();
+            exceptionLog.StackTrace = _exceptionLogParameters.parmStackTrace();
+            exceptionLog.LastProcessTime = _exceptionLogParameters.parmLastProcessTime();
+
+            exceptionLog.write();
+
+            ttscommit;
+
+            BusinessEventsEventSource::EventWriteEventSavedInExceptionLog(exceptionLog.BusinessEventId, exceptionLog.EventId, exceptionLog.LegalEntity, exceptionLog.TargetEndpoint);
+        }
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>moveEventFromExceptionLogToCommitLog</Name>
+				<Source><![CDATA[
+    /// <summary>
+    /// Moves a record of the <c>BusinessEventsExceptionLog</c> table to the <c>BusinessEventsCommitLog</c> table.
+    /// </summary>
+    /// <param name = "_eventId">The <c>BusinessEventsInstanceId</c> of the event to find and move in the exception log.</param>
+    public static void moveEventFromExceptionLogToCommitLog(RecId _exceptionLogRecId)
+    {
+        if (_exceptionLogRecId)
+        {
+            BusinessEventsCommitLogEntry commitLogEntry;
+
+            ttsbegin;
+
+            BusinessEventsExceptionLog exceptionLog = BusinessEventsExceptionLog::find(_exceptionLogRecId, true);
+
+            if(exceptionLog)
+            {
+                commitLogEntry = BusinessEventsCommitLogEntry::construct3(
+                    exceptionLog.BusinessEventId,
+                    exceptionLog.EventId,
+                    BusinessEventsEventSequence::defaultControlNumber,
+                    exceptionLog.EventTime,
+                    exceptionLog.SessionId,
+                    exceptionLog.SerializedContract,
+                    exceptionLog.SerializedFilterProperties,
+                    exceptionLog.LegalEntity,
+                    exceptionLog.TargetEndpoint,
+                    exceptionLog.CDSContext);
+
+                BusinessEventsCommitLogWriterExt::writeToCommitLog(commitLogEntry);
+
+                exceptionLog.delete();
+            }
+
+            ttscommit;
+
+            if(commitLogEntry)
+            {
+                BusinessEventsEventSource::EventWriteEventMovedFromExceptionLogToCommitLog(commitLogEntry.parmBusinessEventId(), commitLogEntry.parmEventId(), commitLogEntry.parmLegalEntity(), commitLogEntry.parmTargetEndpoint());
+            }
+        }
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>moveEventFromCommitLogToExceptionLog</Name>
+				<Source><![CDATA[
+    /// <summary>
+    /// Moves a business event from the <c>BusinessEventsCommitLog</c> to the <c>BusinessEventsExceptionLog</c> table.
+    /// </summary>
+    /// <param name = "_exceptionLogParameters">The business events exception log parameters.</param>
+    /// <returns>
+    /// true if the event was deleted from the commit log, false if the event was not in the commit log and it was only written to the exception log.
+    /// </returns>
+    public static boolean moveEventFromCommitLogToExceptionLog(BusinessEventsExceptionLogParameters _exceptionLogParameters)
+    {
+        boolean deletedCommitLog = false;
+
+        if (_exceptionLogParameters)
+        {
+            ttsbegin;
+
+            BusinessEventsCommitLogWriterExt::writeToExceptionLog(_exceptionLogParameters);
+
+            BusinessEventsCommitLog commitLog = BusinessEventsCommitLog::findFromEventId(_exceptionLogParameters.parmEventId(), true);
+
+            if (commitLog)
+            {
+                commitLog.delete();
+
+                deletedCommitLog = true;
+            }
+
+            ttscommit;
+
+            if(deletedCommitLog)
+            {
+                BusinessEventsEventSource::EventWriteEventMovedFromCommitLogToExceptionLog(_exceptionLogParameters.parmBusinessEventId(), _exceptionLogParameters.parmEventId(), _exceptionLogParameters.parmLegalEntity(), _exceptionLogParameters.parmTargetEndpoint());
+            }
+        }
+
+        return deletedCommitLog;
+    }
+
+]]></Source>
+			</Method>
+		</Methods>
+	</SourceCode>
+</AxClass>
